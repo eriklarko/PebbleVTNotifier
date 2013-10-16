@@ -84,9 +84,9 @@ static size_t append_string(char* buffer, const size_t length, const char* str) 
 }
 
 
-void fuzzy_time_to_words(int hours, int minutes, char words[3][86], size_t length) {
-  int fuzzy_hours = hours;
-  int fuzzy_minutes = ((minutes + 2) / 5) * 5;
+void fuzzy_time_to_words(PblTm* time, char words[3][86], size_t length) {
+  int fuzzy_hours = time->tm_hour;
+  int fuzzy_minutes = ((time->tm_min + 2) / 5) * 5;
 
   // Handle hour & minute roll-over.
   if (fuzzy_minutes >= 25) {
@@ -99,15 +99,22 @@ void fuzzy_time_to_words(int hours, int minutes, char words[3][86], size_t lengt
       fuzzy_hours = 0;
     }
   }
-  if(fuzzy_hours > 12) {
-	fuzzy_hours -= 12;
-  }
   
   memset(*words, 0, length);
   memset(*(words+1), 0, length);
   memset(*(words+2), 0, length);
   
-  append_number(*(words+2), fuzzy_hours);
+  if(time->tm_mon == 11 && time->tm_mday == 24 && fuzzy_hours == 15) {
+	  append_string(*(words+2), 86, "kalle");
+  } else if(time->tm_wday == 5 && fuzzy_hours == 15) {
+	  append_string(*(words+2), 86, "öl");
+  } else {
+	  
+    if(fuzzy_hours >= 13) {
+	  fuzzy_hours -= 12;
+    }  
+	append_number(*(words+2), fuzzy_hours);
+  }
   
   if(fuzzy_minutes > 0 && fuzzy_minutes <= 20) {
 	if(fuzzy_minutes == 15) {

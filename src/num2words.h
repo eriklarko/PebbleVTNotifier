@@ -1,6 +1,7 @@
 #pragma once
 
 #include "string.h"
+#include "pebble_app.h"
 
-void fuzzy_time_to_words(int hours, int minutes, char words[3][86], size_t length);
+void fuzzy_time_to_words(PblTm*, char words[3][86], size_t length);
 size_t append_number(char*, int);

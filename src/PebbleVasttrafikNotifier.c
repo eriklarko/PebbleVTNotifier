@@ -22,6 +22,7 @@ static struct Vars {
   char concatBuf[BUFFER_SIZE];
   int tramNumber;
   int tramMinutes;
+  time_t lastTramUpdate;
 } s_vars;
 
 void handle_init(AppContextRef ctx) {
@@ -91,14 +92,22 @@ void update_time(PblTm* time) {
   text_layer_set_text(&s_vars.watchBold, boldText);
   text_layer_set_text(&s_vars.date, build_date_string(time));
   
-  /*static char timeText[] = "00:00"; // Needs to be static because it's used by the system later.
-  string_format_time(timeText, sizeof(timeText), "%H:%M", time);
-  text_layer_set_text(&s_vars.tramInfo, timeText);*/
+  hide_tram_info_if_timedout();
+}
+
+void hide_tram_info_if_timedout() {
+	// If it has been 70seconds since the last update, hide the info.
+	// time(NULL) returns the number of seconds since the epoch
+	if(time(NULL) - s_vars.lastTramUpdate >= 70) {
+		clear_tram();
+	}
 }
 
 void update_tram() {
   text_layer_set_text(&s_vars.tramInfo, build_tram_string(s_vars.tramNumber));
   text_layer_set_text(&s_vars.tramTime, build_tram_departure_time(s_vars.tramMinutes));
+  
+  s_vars.lastTramUpdate = time(NULL);
 }
 
 void clear_tram() {

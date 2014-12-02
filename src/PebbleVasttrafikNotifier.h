@@ -15,6 +15,8 @@ void init_tram_time(void);
 void init_text_layer(TextLayer*, GRect, GFont);
 
 void update_tram(void);
+void hide_tram_info_if_timedout(void);
+void clear_tram(void);
 char* build_tram_string(int);
 char* build_tram_departure_time(int);
 char* build_date_string(PblTm*);
@@ -22,3 +24,4 @@ char* build_date_string(PblTm*);
 void build_string_array(void);
 void handle_minute_tick(AppContextRef, PebbleTickEvent*);
 void update_time(PblTm*);
+
